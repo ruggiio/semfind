@@ -10,3 +10,5 @@ pymupdf==2.0
 python-docx==1.2.0
 python-pptx==1.0.2
 sqlite-vec==0.1.9
+ctranslate2==4.8.3
+sentencepiece==0.2.2

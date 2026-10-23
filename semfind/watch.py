@@ -149,7 +149,7 @@ class Watcher:
             return
         t0, vecs = time.time(), []
         for _, c in chunks:
-            text = f"title: {name} | text: {c}"
+            text = qembed.doc_text(path, c)
             for _ in range(3):
                 try:
                     vecs.append(qembed.doc_vector(text))

@@ -38,5 +38,4 @@ def encode(model, inputs, batch_size: int = 16) -> np.ndarray:
                         normalize_embeddings=True, convert_to_numpy=True, show_progress_bar=False)
 
 
-def doc_text(name: str, chunk: str) -> str:
-    return f"title: {name} | text: {chunk}"
+from .qembed import doc_text  # noqa: E402,F401  (formato unico per GPU e watcher)

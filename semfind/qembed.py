@@ -5,12 +5,43 @@ Se il server non risponde ricade sul modello torch, lento da caricare ma equival
 """
 import json
 import math
+import re
 import struct
 import urllib.request
+from pathlib import Path
 
 from .config import DIM, EMBED_URL
 
 QUERY_PREFIX = "task: search result | query: "
+TITLE_VERSION = 2  # 1: solo nome del file; 2: cartelle significative + nome
+
+_GENERIC = {"Scrivania", "Desktop", "Scaricati", "Downloads", "Documenti", "Documents",
+            "Immagini", "Pictures", "home", "media", "mnt"}
+
+
+def doc_title(path: str) -> str:
+    """Titolo per EmbeddingGemma ("title: … | text: …"): le cartelle danno il contesto
+    (corso, progetto, …) che il pezzo di testo da solo non ha.
+    ~/Scrivania/RWTH/RLLBC Exam/(VO) …/Lecture 12/Lecture 12/x.pdf -> "RWTH › RLLBC Exam › Lecture 12 › x"
+    """
+    p = Path(path)
+    try:
+        parts = list(p.parent.relative_to(Path.home()).parts)
+    except ValueError:
+        parts = list(p.parent.parts[1:])
+    parts = [x for x in parts if x not in _GENERIC and not x.startswith(".")]
+    if len(parts) > 3:
+        parts = parts[:2] + parts[-1:]
+    out = []
+    for x in [*parts, p.stem]:
+        x = re.sub(r"[_]+", " ", x).strip()
+        if x and (not out or out[-1] != x):
+            out.append(x)
+    return " › ".join(out)[:160]
+
+
+def doc_text(path: str, chunk: str) -> str:
+    return f"title: {doc_title(path)} | text: {chunk}"
 _torch_model = None
 
 

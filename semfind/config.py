@@ -9,7 +9,7 @@ from pathlib import Path
 HOME = Path.home()
 CONFIG_PATH = HOME / ".config/semfind/config.toml"
 DATA_DIR = HOME / ".local/share/semfind"
-DB_PATH = DATA_DIR / "index.db"
+DB_PATH = Path(os.environ.get("SEMFIND_DB", DATA_DIR / "index.db"))  # SEMFIND_DB: altro indice (banco di prova)
 LOCK_PATH = DATA_DIR / "index.lock"
 
 MODEL_ID = "google/embeddinggemma-2"

@@ -157,7 +157,7 @@ def text_pass(db, cfg, ac_only=False, deadline=None):
         if not chunks:
             p.mark(fid, sig, "empty")
             continue
-        p.add(fid, sig, "ok", 0, chunks, [embed.doc_text(name, c) for _, c in chunks])
+        p.add(fid, sig, "ok", 0, chunks, [embed.doc_text(path, c) for _, c in chunks])
         if time.time() - last > 30:
             last = time.time()
             rate = p.n_items / max(1e-9, time.time() - p.t0)
@@ -199,7 +199,7 @@ def image_pass(db, cfg, ac_only=False, deadline=None):
     log(f"immagini: fatto, {p.n_files} file, {p.n_items} immagini in {time.time() - p.t0:.0f}s")
 
 
-def run(cfg, text=True, images=True, ac_only=False, max_minutes=None, min_interval_hours=None):
+def run(cfg, text=True, images=True, ac_only=False, max_minutes=None, min_interval_hours=None, retext=False):
     lock = acquire_lock()
     if ac_only and not on_ac():
         log("a batteria: salto (--ac-only)")
@@ -212,6 +212,13 @@ def run(cfg, text=True, images=True, ac_only=False, max_minutes=None, min_interv
     if store.get_meta(db, "model") not in (None, MODEL_ID):
         log("ATTENZIONE: indice creato con un altro modello, usa --rebuild")
     store.set_meta(db, "model", MODEL_ID)
+    from .qembed import TITLE_VERSION
+    if retext or int(store.get_meta(db, "title_version", 1)) != TITLE_VERSION:
+        # cambiato il formato dei titoli: tutto il testo va ricalcolato (le immagini no)
+        db.execute("UPDATE files SET text_sig = NULL WHERE text_sig IS NOT NULL AND scanned = 0")
+        store.set_meta(db, "title_version", TITLE_VERSION)
+        db.commit()
+        log(f"formato dei titoli v{TITLE_VERSION}: ricalcolo tutto il testo")
     deadline = time.time() + max_minutes * 60 if max_minutes else None
     try:
         scan(db, cfg)

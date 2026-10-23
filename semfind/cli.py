@@ -28,6 +28,7 @@ def main(argv=None):
     i.add_argument("--min-interval-hours", type=float,
                    help="non fare nulla se l'ultimo giro completo è più recente di così")
     i.add_argument("--rebuild", action="store_true", help="cancella e ricrea l'indice")
+    i.add_argument("--retext", action="store_true", help="ricalcola i vettori di tutto il testo")
 
     sub.add_parser("stats", help="statistiche dell'indice")
     sub.add_parser("watch", help="indicizza in tempo reale i file nuovi (servizio)")
@@ -57,7 +58,7 @@ def main(argv=None):
                 p.unlink(missing_ok=True)
         index.run(cfg, text=not a.no_text, images=not a.no_images,
                   ac_only=a.ac_only, max_minutes=a.max_minutes,
-                  min_interval_hours=a.min_interval_hours)
+                  min_interval_hours=a.min_interval_hours, retext=a.retext)
     elif a.cmd == "watch":
         from . import watch
         watch.main()

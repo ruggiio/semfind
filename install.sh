@@ -68,7 +68,7 @@ fi
 
 step "Ambiente Python di Spotlight (.venv-ui, usa GTK di sistema)"
 [ -x "$PREFIX/.venv-ui/bin/python" ] || python3 -m venv --system-site-packages "$PREFIX/.venv-ui"
-"$PREFIX/.venv-ui/bin/pip" install -q sqlite-vec==0.1.9
+"$PREFIX/.venv-ui/bin/pip" install -q sqlite-vec==0.1.9 ctranslate2==4.8.3 sentencepiece==0.2.2
 
 step "llama.cpp $LLAMA_VER"
 if [ ! -x "$PREFIX/vendor/llama-$LLAMA_VER/llama-server" ]; then
@@ -89,6 +89,17 @@ from huggingface_hub import hf_hub_download, snapshot_download
 snapshot_download('$MODEL_ID')
 print(hf_hub_download('$GGUF_REPO', '$GGUF_FILE'))" | tail -1)"
 ln -sf "$GGUF_PATH" "$DATA/$GGUF_FILE"
+
+step "Traduttore italiano → inglese delle domande (opus-mt-it-en, CTranslate2 int8, 87 MB)"
+MT="$DATA/models/opus-mt-it-en-ct2"
+if [ ! -f "$MT/model.bin" ]; then
+  "$PREFIX/.venv/bin/ct2-transformers-converter" --model Helsinki-NLP/opus-mt-it-en     --output_dir "$MT" --quantization int8 --force >/dev/null
+  "$PREFIX/.venv/bin/python" -c "
+import shutil
+from huggingface_hub import hf_hub_download
+for f in ('source.spm', 'target.spm'):
+    shutil.copy(hf_hub_download('Helsinki-NLP/opus-mt-it-en', f), '$MT/' + f)"
+fi
 
 step "Comandi, servizi utente, attivazione DBus"
 mkdir -p "$BIN" "$UNITS" "$DBUS_DIR" "$CONF/semfind"

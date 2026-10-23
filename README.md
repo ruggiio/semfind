@@ -27,8 +27,16 @@ domanda scritta trova anche foto e PDF scansionati.
 - **File nuovi** (`semfind-watch`): appena scarichi o salvi un file nelle cartelle principali, il
   nome è cercabile dopo ~4 s e i documenti di testo piccoli vengono indicizzati subito, sulla CPU.
   File grandi, immagini e PDF scansionati aspettano il giro notturno sulla GPU.
-- **Ricerca**: unisce somiglianza dei vettori, parole chiave (BM25) e nomi dei file con
-  Reciprocal Rank Fusion; i duplicati (stesso nome e dimensione) diventano un solo risultato.
+- **Ricerca**: la similarità dei vettori fa da base; parole chiave (BM25) e nomi dei file pesano
+  il 20 % ciascuno. I punteggi vengono normalizzati e sommati (non le posizioni, come in RRF), i
+  documenti lunghi hanno una piccola penalità (con centinaia di pezzi ne hanno sempre uno vicino a
+  qualunque domanda) e i duplicati (stesso nome e dimensione) diventano un solo risultato.
+- **Domande in italiano, materiale in inglese**: la domanda viene tradotta (opus-mt-it-en con
+  CTranslate2) e per ogni pezzo vale la similarità migliore tra le due versioni. Il traduttore si
+  carica alla prima domanda e si scarica dopo 5 minuti senza domande.
+- **Contesto delle cartelle**: ogni pezzo è indicizzato come
+  `title: RWTH › RLLBC Exam › Lecture 12 › slides | text: …`, il formato con cui EmbeddingGemma 2
+  è addestrato.
 
 ## Requisiti
 
@@ -84,6 +92,23 @@ semfind stats                          # stato dell'indice
 semfind index                          # aggiornamento manuale
 ```
 
+## Qualità della ricerca
+
+`eval/` contiene un banco di prova: 34 domande scritte a mano (italiano, inglese, tedesco; vaghe
+e precise) su documenti reali, con il file atteso. `python -m eval.run` misura in che posizione
+esce; `--set chiave=valore` prova un parametro di `search.TUNING` senza toccare il codice.
+Sull'indice dell'autore:
+
+| | primo posto | primi 5 | MRR |
+|---|---|---|---|
+| prima versione (RRF, pesi alla pari) | 26 % | 62 % | 0,40 |
+| fusione dei punteggi, pesi 1 / 0,2 / 0,2, penalità di lunghezza | 44 % | 76 % | 0,56 |
+| + cartelle nei titoli + traduzione della domanda | 53 % | 79 % | 0,63 |
+
+Le domande riguardano i file di ciascuno, quindi `eval/queries.tsv` è escluso da git: per
+misurare sul proprio PC si parte da `eval/queries.example.tsv` e si scrivono 20–40 domande sui
+propri documenti.
+
 ## Configurazione
 
 `~/.config/semfind/config.toml` (esempio commentato in `config.example.toml`): cartelle da
@@ -99,8 +124,8 @@ Misurate su un portatile con Xeon W-11955M, 32 GB e RTX A2000 (4 GB):
 |---|---|
 | Primo indice: 62.000 pezzi di testo + 3.300 immagini | ~44 min sulla GPU |
 | Giro incrementale senza novità | ~2,5 s |
-| RAM sempre occupata (llama-server + Spotlight + watcher) | ~260 MB propri, più 290 MB di modello mappato (cache che il kernel libera se serve) |
-| Una ricerca | ~60 ms in Spotlight, ~0,3 s da terminale |
+| RAM sempre occupata (llama-server + Spotlight + watcher) | ~260 MB propri, più 290 MB di modello mappato (cache che il kernel libera se serve); +110 MB per il traduttore nei 5 minuti dopo una ricerca |
+| Una ricerca | ~150 ms in Spotlight, ~0,45 s da terminale |
 
 Il percorso delle query non usa torch: torch sulla CPU costerebbe 2,4 GB di RAM. llama.cpp con il
 GGUF Q8_0 produce gli stessi vettori dell'indice (coseno ≥ 0,997).
@@ -112,7 +137,8 @@ semfind/   config.py   default e config.toml          store.py   schema SQLite, 
            extract.py  testo da PDF/docx/pptx/…       embed.py   EmbeddingGemma 2 con torch (indicizzazione)
            index.py    scansione e giro completo      qembed.py  vettori via llama-server (query, watcher)
            watch.py    inotify, file nuovi            search.py  ricerca ibrida + RRF
-           cli.py      comandi semfind / cerca
+           translate.py  traduzione it→en della domanda   cli.py  comandi semfind / cerca
+eval/      banco di prova della ricerca (queries.tsv + run.py)
 ui/        spotlight.py + spotlight.css   finestra GTK4 precaricata
 systemd/   template dei servizi utente (@PREFIX@ e @DATA@ li sostituisce install.sh)
 bin/, dbus/  template dei comandi e dell'attivazione DBus

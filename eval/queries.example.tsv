@@ -1,0 +1,7 @@
+# Copia in eval/queries.tsv (escluso da git: contiene nomi dei tuoi file) e scrivi 20-40 domande
+# sui TUOI documenti, come le faresti davvero, con parole diverse da quelle del testo.
+# Formato: domanda <TAB> regex sul nome del file atteso
+come si linearizzano le equazioni del moto attorno all'equilibrio	^appunti_dinamica
+slide sui vantaggi dei policy gradient	^Lecture8_slides
+il mio curriculum in italiano	^cv_
+calendario delle lezioni del corso di robotica	^calendar
