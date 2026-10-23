@@ -1,0 +1,12 @@
+[Unit]
+Description=semfind: indicizzazione incrementale dei file (EmbeddingGemma 2)
+ConditionACPower=true
+
+[Service]
+Type=oneshot
+WorkingDirectory=@PREFIX@
+ExecStart=@PREFIX@/.venv/bin/python -m semfind index --ac-only --max-minutes 120 --min-interval-hours 20
+Nice=19
+IOSchedulingClass=idle
+CPUSchedulingPolicy=batch
+TimeoutStartSec=3h

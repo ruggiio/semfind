@@ -1,0 +1,116 @@
+/* Spotlight di macOS 26 Tahoe: barra a capsula in vetro, risultati nello stesso pannello. */
+
+window.sf-overlay,
+window.sf-overlay.background {
+  background: none;
+  box-shadow: none;
+}
+
+.sf-panel {
+  font-family: "Inter", "SF Pro Text", sans-serif;
+  border-radius: 28px;
+  padding: 0;
+  margin-bottom: 40px;
+}
+.sf-panel.expanded { border-radius: 24px; }
+
+.sf-bar { min-height: 56px; padding: 0 12px 0 18px; }
+
+.sf-mag { -gtk-icon-size: 21px; }
+
+text.sf-entry {
+  font-family: "Inter Display", "Inter", "SF Pro Display", sans-serif;
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: -0.2px;
+  background: none;
+  border: none;
+  box-shadow: none;
+  outline: none;
+  padding: 0;
+}
+
+button.sf-filter {
+  min-width: 30px;
+  min-height: 30px;
+  padding: 0;
+  border-radius: 999px;
+  background: none;
+  box-shadow: none;
+  -gtk-icon-size: 15px;
+}
+
+separator.sf-sep { min-height: 1px; margin: 0 14px; }
+
+.sf-scroll, .sf-list, scrolledwindow.sf-scroll > viewport { background: none; }
+.sf-list { padding: 4px 0 8px 0; }
+
+.sf-header {
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 9px 22px 3px 22px;
+}
+
+row.sf-row {
+  min-height: 38px;
+  padding: 4px 10px;
+  margin: 0 8px;
+  border-radius: 10px;
+  background: none;
+  outline: none;
+  box-shadow: none;
+  transition: none;
+}
+.sf-title { font-size: 14px; font-weight: 500; }
+.sf-sub   { font-size: 11.5px; margin-top: 1px; }
+.sf-right { font-size: 12px; margin-left: 8px; }
+row.sf-row:selected .sf-title,
+row.sf-row:selected .sf-sub,
+row.sf-row:selected .sf-right { color: #ffffff; }
+
+scrolledwindow.sf-scroll scrollbar { background: none; border: none; }
+scrolledwindow.sf-scroll scrollbar slider { min-width: 5px; border-radius: 99px; }
+
+/* --------------------------------------------------------------- scuro */
+window.dark .sf-panel {
+  background-color: rgba(34, 34, 38, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.50),
+              0 2px 8px rgba(0, 0, 0, 0.30),
+              inset 0 1px rgba(255, 255, 255, 0.10);
+}
+window.dark .sf-mag { color: rgba(255, 255, 255, 0.55); }
+window.dark text.sf-entry { color: rgba(255, 255, 255, 0.95); caret-color: #0a84ff; }
+window.dark text.sf-entry > placeholder { color: rgba(255, 255, 255, 0.38); }
+window.dark text.sf-entry > selection { background-color: rgba(10, 132, 255, 0.45); }
+window.dark button.sf-filter { color: rgba(255, 255, 255, 0.55); }
+window.dark button.sf-filter:hover { background-color: rgba(255, 255, 255, 0.08); }
+window.dark button.sf-filter:checked { background-color: rgba(10, 132, 255, 0.95); color: white; }
+window.dark separator.sf-sep { background-color: rgba(255, 255, 255, 0.09); }
+window.dark .sf-header { color: rgba(255, 255, 255, 0.45); }
+window.dark .sf-title { color: rgba(255, 255, 255, 0.92); }
+window.dark .sf-sub, window.dark .sf-right { color: rgba(255, 255, 255, 0.48); }
+window.dark row.sf-row:selected { background-color: #0a84ff; }
+window.dark scrollbar slider { background-color: rgba(255, 255, 255, 0.25); }
+
+/* --------------------------------------------------------------- chiaro */
+window.light .sf-panel {
+  background-color: rgba(246, 246, 248, 0.96);
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.22),
+              0 2px 8px rgba(0, 0, 0, 0.10),
+              inset 0 1px rgba(255, 255, 255, 0.80);
+}
+window.light .sf-mag { color: rgba(0, 0, 0, 0.50); }
+window.light text.sf-entry { color: rgba(0, 0, 0, 0.88); caret-color: #007aff; }
+window.light text.sf-entry > placeholder { color: rgba(0, 0, 0, 0.32); }
+window.light text.sf-entry > selection { background-color: rgba(0, 122, 255, 0.30); }
+window.light button.sf-filter { color: rgba(0, 0, 0, 0.50); }
+window.light button.sf-filter:hover { background-color: rgba(0, 0, 0, 0.06); }
+window.light button.sf-filter:checked { background-color: #007aff; color: white; }
+window.light separator.sf-sep { background-color: rgba(0, 0, 0, 0.08); }
+window.light .sf-header { color: rgba(0, 0, 0, 0.45); }
+window.light .sf-title { color: rgba(0, 0, 0, 0.88); }
+window.light .sf-sub, window.light .sf-right { color: rgba(0, 0, 0, 0.48); }
+window.light row.sf-row:selected { background-color: #007aff; }
+window.light scrollbar slider { background-color: rgba(0, 0, 0, 0.25); }

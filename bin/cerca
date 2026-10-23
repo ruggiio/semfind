@@ -1,0 +1,2 @@
+#!/bin/sh
+cd "@PREFIX@" && exec .venv/bin/python -m semfind search "$@"

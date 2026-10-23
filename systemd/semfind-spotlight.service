@@ -1,0 +1,16 @@
+[Unit]
+Description=semfind: Spotlight (finestra precaricata)
+PartOf=graphical-session.target
+After=graphical-session.target semfind-embed.service
+Wants=semfind-embed.service
+
+[Service]
+Type=dbus
+BusName=io.github.semfind.Spotlight
+ExecStart=@PREFIX@/.venv-ui/bin/python @PREFIX@/ui/spotlight.py
+Restart=on-failure
+RestartSec=3
+MemoryHigh=200M
+
+[Install]
+WantedBy=graphical-session.target

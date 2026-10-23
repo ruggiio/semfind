@@ -1,0 +1,11 @@
+# semfind — copia in ~/.config/semfind/config.toml (install.sh lo fa se manca).
+# Tutte le chiavi sono facoltative: i default sono in semfind/config.py.
+# Le cartelle nascoste (.ssh, .gnupg, profili dei browser, ...) sono sempre escluse.
+
+# roots = ["~"]                          # dove cercare
+exclude_paths = ["~/.ssh", "~/.gnupg"]   # aggiungi qui le cartelle private
+# exclude_dirs = [...]                   # sostituisce l'intera lista di default
+# watch_dirs = ["~/Downloads", "~/Desktop", "~/Documents", "~/Pictures"]  # default: cartelle XDG
+# text_exts = ["pdf", "epub", "docx", "pptx", "md", "tex", "txt", "py", "m", "ino", "ipynb"]
+# image_exts = ["jpg", "jpeg", "png", "webp"]
+# max_chunks_per_file = 300

@@ -1,0 +1,4 @@
+[D-BUS Service]
+Name=io.github.semfind.Spotlight
+Exec=@PREFIX@/.venv-ui/bin/python @PREFIX@/ui/spotlight.py
+SystemdService=semfind-spotlight.service

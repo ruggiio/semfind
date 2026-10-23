@@ -1,0 +1,4 @@
+#!/bin/sh
+# Mostra/nasconde Spotlight (semfind). Se non è in esecuzione, DBus lo avvia.
+exec gdbus call --session --dest io.github.semfind.Spotlight --object-path /io/github/semfind/Spotlight \
+  --method org.gtk.Actions.Activate toggle [] "{'activation-token': <'${XDG_ACTIVATION_TOKEN:-}'>}" >/dev/null

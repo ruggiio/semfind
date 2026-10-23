@@ -1,0 +1,17 @@
+[Unit]
+Description=semfind: indicizzazione in tempo reale dei file nuovi (inotify)
+After=semfind-embed.service
+Wants=semfind-embed.service
+
+[Service]
+WorkingDirectory=@PREFIX@
+ExecStart=@PREFIX@/.venv/bin/python -m semfind watch
+Restart=on-failure
+RestartSec=10
+Nice=15
+IOSchedulingClass=idle
+MemoryHigh=250M
+MemoryMax=400M
+
+[Install]
+WantedBy=default.target

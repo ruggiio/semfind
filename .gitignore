@@ -1,0 +1,7 @@
+.venv/
+.venv-ui/
+vendor/
+__pycache__/
+*.pyc
+*.png
+!docs/*.png
