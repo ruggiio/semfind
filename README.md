@@ -128,3 +128,8 @@ bin/, dbus/  template dei comandi e dell'attivazione DBus
   alta. Se qualcosa appare strano, il primo sospettato è quello.
 - Con l'anteprima aperta, cliccare su un'altra finestra non chiude Spotlight.
 - Log: `journalctl --user -u semfind-embed -u semfind-spotlight -u semfind-watch -u semfind-index`
+
+## Licenza
+
+[MIT](LICENSE). I componenti scaricati da `install.sh` hanno le loro licenze:
+EmbeddingGemma 2 (Apache 2.0), llama.cpp (MIT), PyTorch (BSD-3-Clause), PyMuPDF (AGPL-3.0).
